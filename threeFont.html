@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>three.js Demo</title>
+<style type="text/css">
+*{
+padding:0;
+margin:0;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<!--script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script type="text/javascript" src="https://threejs.org/examples/js/controls/OrbitControls.js"></script-->
+<script type="text/javascript" src="libraries/three.js"></script>
+<script type="text/javascript" src="libraries/orbitControls.js"></script>
+<script type="text/javascript">
+var canvas = document.getElementById("canvas");
+var txt = getParameterByName("n",window.location.href) || "Programming";
+var txtMesh;
+var limit = 50;
+
+function getParameterByName(name, url = window.location.href) {
+	name = name.replace(/[\[\]]/g, '\\$&');
+	var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+	results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+function resize(){
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setPixelRatio(Math.min(2,window.devicePixelRatio));
+}
+window.addEventListener("load",function(){animate()});
+window.addEventListener("resize",function(){
+	resize();
+	renderer.render(scene,camera);
+});
+
+var scene = new THREE.Scene();
+
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+scene.add(camera);
+camera.position.z = 150;
+
+var renderer = new THREE.WebGLRenderer({canvas:canvas});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+
+var aLight = new THREE.AmbientLight(0xffffff,0.4);
+scene.add(aLight);
+
+var dLight = new THREE.DirectionalLight(0xffffff,0.3);
+dLight.position.set(0,20,10);
+dLight.castShadow = true;
+scene.add(dLight);
+
+var hLight = new THREE.HemisphereLight(0xfff000,0x8800fa,0.4);
+hLight.position.set(0,0,0);
+scene.add(hLight);
+
+
+/*var dLightCamera = new THREE.directionalLightHelper(dLight);
+dLightCamera.position.set(0,20,0);
+scene.add(dLightCamera);*/
+
+/*var fog = new THREE.Fog(0xaaffaa,1,15);
+scene.fog = fog;*/
+var boxGeos = new Array(5);
+for(var i=0;i<boxGeos.length;i++){
+	boxGeos[i] = new THREE.TorusBufferGeometry(1,0.5,8,Math.floor(random(3,24)));
+}
+boxGeos.push(new THREE.BoxBufferGeometry(2,2,2));
+
+var boxMat;
+//scene.add(box);
+
+for(var i=0;i<200;i++){
+	boxMat = new THREE.MeshLambertMaterial();
+	boxMat.color = new THREE.Color(randomColor());
+	var box = new THREE.Mesh(boxGeos[Math.floor(random(0,boxGeos.length))],boxMat);
+	box.position.x = random(-limit,limit);
+	box.position.y = random(-limit,limit);
+	box.position.z = random(-limit,limit);
+	box.rotation.x = random(0,Math.PI);
+	box.rotation.y = random(0,Math.PI);
+	box.rotation.z = random(0,Math.PI);
+	var scale = random(0.5,2);
+	box.scale.x = scale;
+	box.scale.y = scale;
+	box.scale.z = scale;
+	scene.add(box);
+}
+function randomColor(){
+	var chars = "56789abcdef";
+	var str = "#";
+	for(var i=0;i<6;i++){
+		str += chars.charAt(Math.floor(Math.random()*chars.length));
+	}
+	return str;
+}
+
+function random(min,max){
+	return min+Math.random()*(max-min);
+}
+
+var plane = new THREE.Mesh(
+	new THREE.PlaneGeometry(10,10),
+	new THREE.MeshLambertMaterial({color:0xffffff})
+);
+plane.rotation.x = -Math.PI/2;
+plane.receiveShadow = true;
+
+
+
+var loader = new THREE.FontLoader();
+
+loader.load('file:///storage/emulated/0/!html/libraries/helvetiker_regular.typeface.json',function(font){
+	var geometry = new THREE.TextGeometry(txt, {
+		font: font,
+		size: 10,
+		height: 2.5,
+		curveSegments: 12,
+		bevelEnabled: true,
+		bevelThickness: 0.4,
+		bevelSize: 0.4,
+		bevelOffset: 0,
+		bevelSegments: 1
+	});
+	var material = new THREE.MeshLambertMaterial({color:0xffffff});
+	geometry.center();
+	txtMesh = new THREE.Mesh(geometry,material);
+	scene.add(txtMesh);
+});
+
+/*var axesHelper = new THREE.AxesHelper(20);
+scene.add(axesHelper);*/
+
+var control = new THREE.OrbitControls(camera, renderer.domElement);
+control.enableDamping = true;
+control.update();
+
+
+renderer.render(scene,camera);
+
+function animate(){
+	renderer.render(scene,camera);
+	control.update();
+	requestAnimationFrame(animate);
+}
+</script>
+</body>
+</html>
