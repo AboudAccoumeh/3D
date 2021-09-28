@@ -13,8 +13,8 @@ margin:0;
 <canvas id="canvas"></canvas>
 <!--script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script type="text/javascript" src="https://threejs.org/examples/js/controls/OrbitControls.js"></script-->
-<script type="text/javascript" src="libraries/three.js"></script>
-<script type="text/javascript" src="libraries/orbitControls.js"></script>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="orbitControls.js"></script>
 <script type="text/javascript">
 var canvas = document.getElementById("canvas");
 var txt = getParameterByName("n",window.location.href) || "Programming";
@@ -119,7 +119,7 @@ plane.receiveShadow = true;
 
 var loader = new THREE.FontLoader();
 
-loader.load('file:///storage/emulated/0/!html/libraries/helvetiker_regular.typeface.json',function(font){
+loader.load('helvetiker_regular.typeface.json',function(font){
 	var geometry = new THREE.TextGeometry(txt, {
 		font: font,
 		size: 10,
