@@ -18,6 +18,8 @@ margin:0;
 <script type="text/javascript">
 var canvas = document.getElementById("canvas");
 var txt = getParameterByName("n",window.location.href) || "Programming";
+var col1 = getParameterByName("c1",window.location.href) || new THREE.Color("#fff000");
+var col2 = getParameterByName("c2",window.location.href) || new THREE.Color("#8800fa");
 var txtMesh;
 var limit = 50;
 
@@ -59,7 +61,7 @@ dLight.position.set(0,20,10);
 dLight.castShadow = true;
 scene.add(dLight);
 
-var hLight = new THREE.HemisphereLight(0xfff000,0x8800fa,0.4);
+var hLight = new THREE.HemisphereLight(col1,col2,0.5);
 hLight.position.set(0,0,0);
 scene.add(hLight);
 
